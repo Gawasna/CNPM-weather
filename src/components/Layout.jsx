@@ -13,6 +13,8 @@ import Forecast5Days from './Forecast5Days';
 
 import { fetchData, url } from '../utils/api';
 import { DEFAULT_LOCATION } from '../App';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
+
 
 function Layout() {
   const location = useLocation();
@@ -27,6 +29,8 @@ function Layout() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentLocationBtnDisabled, setCurrentLocationBtnDisabled] = useState(false);
+
+  const { t } = useTranslation(); // Use the hook
 
   // Effect to fetch weather data whenever the hash changes
   useEffect(() => {
@@ -44,7 +48,7 @@ function Layout() {
           fetchData(url.currentWeather(lat, lon)),
           fetchData(url.airPollution(lat, lon)),
           fetchData(url.forecast(lat, lon)),
-          fetchData(url.reverseGeo(lat, lon)).then(data => data[0])
+          fetchData(url.reverseGeo(lat, lon)).then(data => data[0] || {}) // Handle case where reverse geo might return empty array
         ]);
 
         setWeatherData({ ...current, locationInfo });
@@ -54,7 +58,8 @@ function Layout() {
 
       } catch (err) {
         console.error("Failed to fetch weather data:", err);
-        setError("Could not load weather data. Please try again later.");
+        // Use translated error message
+        setError(err.message || t('errorPage.dataErrorMessage')); // Use error message from fetchData or fallback
       } finally {
         setIsLoading(false);
       }
@@ -64,24 +69,28 @@ function Layout() {
 
     if (hash === '#/current-location') {
       setCurrentLocationBtnDisabled(true);
-      setIsLoading(true);
-      setError(null);
+      setIsLoading(true); // Keep loading true while waiting for geolocation
+      setError(null); // Clear previous errors
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
+          // Navigate to the weather route with the obtained coordinates
+          // Use replace: true to avoid adding /#/current-location to history
           navigate(`#/weather?lat=${latitude}&lon=${longitude}`, { replace: true });
-          // setCurrentLocationBtnDisabled(false); // This will be re-enabled by the next hashchange effect
+           // setCurrentLocationBtnDisabled will be handled by the effect re-running for the new hash
         },
         (err) => {
           console.error("Geolocation failed:", err);
+          // If geolocation fails, navigate to the default location
           navigate(`#/weather?lat=${DEFAULT_LOCATION.lat}&lon=${DEFAULT_LOCATION.lon}`, { replace: true });
-          setError("Could not retrieve current location. Showing data for the default location.");
-          // setCurrentLocationBtnDisabled(false); // This will be re-enabled by the next hashchange effect
+          // Use translated message for geolocation error
+          setError(t('geolocation.permissionDeniedMessage'));
+          // setCurrentLocationBtnDisabled will be handled by the effect re-running for the new hash
         }
       );
     } else if (hash.startsWith('#/weather?')) {
-      setCurrentLocationBtnDisabled(false);
+      setCurrentLocationBtnDisabled(false); // Enable button if on a specific location page
       const params = new URLSearchParams(hash.substring('#/weather?'.length));
       const lat = params.get('lat');
       const lon = params.get('lon');
@@ -89,14 +98,21 @@ function Layout() {
       if (lat && lon) {
         fetchWeatherForLocation(lat, lon);
       } else {
+        // If the hash is invalid, navigate to the default location
+        console.warn("Invalid weather hash, navigating to default.");
         navigate(`#/weather?lat=${DEFAULT_LOCATION.lat}&lon=${DEFAULT_LOCATION.lon}`, { replace: true });
       }
     } else {
-      // Fallback for unexpected hash
+      // If the hash is neither known route, navigate to default starting point
+      console.warn(`Unknown hash route: ${hash}, navigating to current location.`);
       navigate(`#/current-location`, { replace: true });
     }
 
-  }, [location.hash, navigate]); // Effect dependencies
+    // Cleanup function if needed (e.g., to clear ongoing geolocation watches)
+    // return () => { /* cleanup */ };
+
+  }, [location.hash, navigate, t]); // Added 't' as a dependency because error message relies on it
+
 
   // Render the ErrorPage if there is an error and not loading
   if (error && !isLoading) {
@@ -110,7 +126,7 @@ function Layout() {
       <Header currentLocationBtnDisabled={currentLocationBtnDisabled} />
 
       {/* WRAP THE ARTICLE WITH MAIN */}
-      <main> {/* Added the main tag back */}
+      <main>
         {/* The main content container */}
         {/* Apply fade-in class when data is loaded */}
         <article className={`container ${!isLoading && weatherData ? 'fade-in' : ''}`} data-container>
@@ -139,15 +155,18 @@ function Layout() {
               </div>
             </>
           ) : (
-             // Optional: Render a fallback message if not loading, no error, and no data
+             // Render a fallback message if not loading, no error, and no data
+             // This will be shown only if isLoading is false and there's no error, but data is still null.
+             // It acts as a final fallback state.
              !isLoading && !error && (
                <div style={{ textAlign: 'center', padding: '40px' }}>
-                  <p className="body-1">Select a location or enable geolocation.</p>
+                  {/* Use translated fallback message */}
+                  <p className="body-1">{t('geolocation.fallbackMessage')}</p>
                </div>
              )
           )}
         </article>
-      </main> {/* Closed the main tag */}
+      </main>
 
        {/* The ErrorPage is rendered separately, controlled by the top-level 'error' state */}
     </>

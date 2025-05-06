@@ -1,8 +1,10 @@
 import React from 'react';
-import { aqiText, getTime } from '../utils/weatherUtils'; // Import utility functions
+import { getTime } from '../utils/weatherUtils';
+import { useTranslation } from 'react-i18next';
 
 function Highlights({ highlightData, currentWeatherData }) {
-  // Don't render if data is not available
+  const { t, i18n } = useTranslation();
+
   if (!highlightData || !currentWeatherData) return null;
 
   const {
@@ -12,79 +14,82 @@ function Highlights({ highlightData, currentWeatherData }) {
       main: { feels_like, pressure, humidity },
       visibility,
       sys: { sunrise: sunriseUnixUTC, sunset: sunsetUnixUTC },
-      timezone // Need timezone from current weather for time formatting
+      timezone
   } = currentWeatherData;
 
-  // Safely access air pollution data
   const {
-      main: { aqi } = {}, // Default to empty object if main is undefined
-      components: { no2, o3, so2, pm2_5 } = {} // Default to empty object if components is undefined
-  } = airPollutionList[0] || {}; // Default to empty array element if list is empty
+      main: { aqi } = {},
+      components: { no2, o3, so2, pm2_5 } = {}
+  } = airPollutionList[0] || {};
 
-  const aqiInfo = aqiText[aqi] || { level: 'N/A', message: 'Air quality data not available' };
+  const aqiLevelKey = `highlights.airQualityIndex.level.${aqi}`;
+  const aqiMessageKey = `highlights.airQualityIndex.message.${aqi}`;
+  const aqiLevel = t(aqiLevelKey, { defaultValue: t('highlights.airQualityIndex.level.default') });
+  const aqiMessage = t(aqiMessageKey, { defaultValue: t('highlights.airQualityIndex.message.default') });
 
 
   return (
     <section className="section highlights" aria-labelledby="highlights-label" data-highlights>
-      <h2 className="title-2" id="highlights-label">Today's Highlights</h2> {/* Corrected typo: Todays -> Today's */}
+      <h2 className="title-2" id="highlights-label">{t('highlights.title')}</h2>
 
       <div className="highlight-list">
 
         {/* Air Quality Index Card */}
         <div className="card card-sm highlight-card one">
-          <h3 className="title-3">Air Quality Index</h3>
+          <h3 className="title-3">{t('highlights.airQualityIndex.title')}</h3>
           <div className="wrapper">
-            <span className="m-icon">air</span>
+             {/* Icon text MUST be the English keyword for the font */}
+            <span className="m-icon">air</span> {/* Keep "air" */}
             <ul className="card-list">
-              {/* Safely check if components exist before rendering */}
               {pm2_5 !== undefined && (
                   <li className="card-item">
                       <p className="title-1">{pm2_5.toPrecision(3)}</p>
-                      <p className="label-1">PM<sub>2.5</sub></p>
+                      <p className="label-1">{t('highlights.airQualityIndex.pm25')}</p>
                   </li>
               )}
               {so2 !== undefined && (
                   <li className="card-item">
                       <p className="title-1">{so2.toPrecision(3)}</p>
-                      <p className="label-1">SO<sub>2</sub></p>
+                      <p className="label-1">{t('highlights.airQualityIndex.so2')}</p>
                   </li>
               )}
                {no2 !== undefined && (
                   <li className="card-item">
                       <p className="title-1">{no2.toPrecision(3)}</p>
-                      <p className="label-1">NO<sub>2</sub></p>
+                      <p className="label-1">{t('highlights.airQualityIndex.no2')}</p>
                   </li>
                )}
                {o3 !== undefined && (
                    <li className="card-item">
                        <p className="title-1">{o3.toPrecision(3)}</p>
-                       <p className="label-1">O<sub>3</sub></p>
+                       <p className="label-1">{t('highlights.airQualityIndex.o3')}</p>
                    </li>
                )}
             </ul>
           </div>
-          {/* Use aqi value for dynamic classes and utility for text/title */}
-          <span className={`badge aqi-${aqi} label-${aqi}`} title={aqiInfo.message}>
-            {aqiInfo.level}
+          <span className={`badge aqi-${aqi} label-${aqi}`} title={aqiMessage}>
+            {aqiLevel}
           </span>
         </div>
 
         {/* Sunrise & Sunset Card */}
         <div className="card card-sm highlight-card two">
-          <h3 className="title-3">Sunrise & Sunset</h3>
+          <h3 className="title-3">{t('highlights.sunriseSunset.title')}</h3>
           <div className="card-list">
             <div className="card-item">
-              <span className="m-icon">clear_day</span>
+               {/* Icon text MUST be the English keyword for the font */}
+              <span className="m-icon">clear_day</span> {/* Keep "clear_day" */}
               <div>
-                <p className="label-1">Sunrise</p>
-                <p className="title-1">{getTime(sunriseUnixUTC, timezone)}</p> {/* Use utility for time */}
+                <p className="label-1">{t('highlights.sunriseSunset.sunriseLabel')}</p>
+                <p className="title-1">{getTime(sunriseUnixUTC, timezone, i18n.language)}</p>
               </div>
             </div>
             <div className="card-item">
-              <span className="m-icon">clear_night</span>
+               {/* Icon text MUST be the English keyword for the font */}
+              <span className="m-icon">clear_night</span> {/* Keep "clear_night" */}
               <div>
-                <p className="label-1">Sunset</p>
-                <p className="title-1">{getTime(sunsetUnixUTC, timezone)}</p> {/* Use utility for time */}
+                <p className="label-1">{t('highlights.sunriseSunset.sunsetLabel')}</p>
+                <p className="title-1">{getTime(sunsetUnixUTC, timezone, i18n.language)}</p>
               </div>
             </div>
           </div>
@@ -92,37 +97,41 @@ function Highlights({ highlightData, currentWeatherData }) {
 
         {/* Humidity Card */}
         <div className="card card-sm highlight-card">
-          <h3 className="title-3">Humidity</h3>
+          <h3 className="title-3">{t('highlights.humidity.title')}</h3>
           <div className="wrapper">
-            <span className="m-icon">humidity_percentage</span>
-            <p className="title-1">{humidity}<sub>%</sub></p>
+             {/* Icon text MUST be the English keyword for the font */}
+            <span className="m-icon">humidity_percentage</span> {/* Keep "humidity_percentage" */}
+            <p className="title-1">{t('highlights.humidity.unit', { value: humidity })}</p>
           </div>
         </div>
 
         {/* Pressure Card */}
         <div className="card card-sm highlight-card">
-          <h3 className="title-3">Pressure</h3>
+          <h3 className="title-3">{t('highlights.pressure.title')}</h3>
           <div className="wrapper">
-            <span className="m-icon">airwave</span>
-            <p className="title-1">{pressure}<sub>hPa</sub></p>
+             {/* Icon text MUST be the English keyword for the font */}
+            <span className="m-icon">airwave</span> {/* Keep "airwave" */}
+            <p className="title-1">{t('highlights.pressure.unit', { value: pressure })}</p>
           </div>
         </div>
 
         {/* Visibility Card */}
         <div className="card card-sm highlight-card">
-          <h3 className="title-3">Visibility</h3>
+          <h3 className="title-3">{t('highlights.visibility.title')}</h3>
           <div className="wrapper">
-            <span className="m-icon">visibility</span>
-            <p className="title-1">{visibility / 1000}<sub>km</sub></p> {/* Convert meters to km */}
+             {/* Icon text MUST be the English keyword for the font */}
+            <span className="m-icon">visibility</span> {/* Keep "visibility" */}
+            <p className="title-1">{t('highlights.visibility.unit', { value: visibility / 1000 })}</p>
           </div>
         </div>
 
         {/* Feels Like Card */}
         <div className="card card-sm highlight-card">
-          <h3 className="title-3">Feels Like</h3>
+          <h3 className="title-3">{t('highlights.feelsLike.title')}</h3>
           <div className="wrapper">
-            <span className="m-icon">thermostat</span>
-            <p className="title-1">{parseInt(feels_like)}°<sup>c</sup></p>
+             {/* Icon text MUST be the English keyword for the font */}
+            <span className="m-icon">thermostat</span> {/* Keep "thermostat" */}
+            <p className="title-1">{t('highlights.feelsLike.unit', { value: parseInt(feels_like) })}</p>
           </div>
         </div>
 

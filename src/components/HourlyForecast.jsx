@@ -1,8 +1,10 @@
 import React from 'react';
-import { getHours, mps_to_kmh } from '../utils/weatherUtils'; // Import utility functions
+import { getHours, mps_to_kmh } from '../utils/weatherUtils';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 function HourlyForecast({ hourlyData }) {
-  // Don't render if data is not available
+  const { t, i18n } = useTranslation(); // Use the hook
+
   if (!hourlyData) return null;
 
   const {
@@ -10,13 +12,11 @@ function HourlyForecast({ hourlyData }) {
     city: { timezone }
   } = hourlyData;
 
-  // Get the first 8 entries for the 24-hour forecast
   const hourlyItems = forecastList.slice(0, 8);
 
-
   return (
-    <section className="section hourly-forecast" aria-label="hourly forecast" data-hourly-forecast>
-      <h2 className="title-2">Today at</h2>
+    <section className="section hourly-forecast" aria-label={t('hourlyForecast.title')} data-hourly-forecast>
+      <h2 className="title-2">{t('hourlyForecast.title')}</h2> {/* Use t() */}
 
       <div className="slider-container">
         {/* Temperature Forecast */}
@@ -26,13 +26,15 @@ function HourlyForecast({ hourlyData }) {
             const [{ icon, description }] = weather;
 
             return (
-              <li key={index} className="slider-item"> {/* Add key */}
+              <li key={index} className="slider-item">
                 <div className="card card-sm slider-card">
-                  <p className="body-3">{getHours(dateTimeUnix, timezone)}</p> {/* Use utility for hours */}
-                  {/* Image path relative to public directory */}
+                  {/* Pass locale to utility function */}
+                  <p className="body-3">{getHours(dateTimeUnix, timezone, i18n.language)}</p>
+                   {/* Use API description for alt/title text */}
                   <img src={`/assets/images/weather_icons/${icon}.png`} width="48" height="48" loading="lazy" alt={description}
                     className="weather-icon" title={description} />
-                  <p className="body-3">{parseInt(temp)}°</p>
+                   {/* Use t() with interpolation for temperature */}
+                  <p className="body-3">{t('hourlyForecast.tempUnit', { temp: parseInt(temp) })}</p>
                 </div>
               </li>
             );
@@ -43,18 +45,18 @@ function HourlyForecast({ hourlyData }) {
         <ul className="slider-list" data-wind>
           {hourlyItems.map((item, index) => {
             const { dt: dateTimeUnix, wind: { deg: windDirection, speed: windSpeed } } = item;
-
-             // Ensure windSpeed is a number before conversion
             const windSpeedKmh = windSpeed !== undefined ? parseInt(mps_to_kmh(windSpeed)) : 'N/A';
 
             return (
-              <li key={index} className="slider-item"> {/* Add key */}
+              <li key={index} className="slider-item">
                 <div className="card card-sm slider-card">
-                  <p className="body-3">{getHours(dateTimeUnix, timezone)}</p> {/* Use utility for hours */}
-                   {/* Image path relative to public directory. Apply rotation style. */}
-                  <img src="/assets/images/weather_icons/direction.png" width="48" height="48" loading="lazy" alt="direction"
-                    className="weather-icon" style={{ transform: `rotate(${windDirection - 180}deg)` }} /> {/* Inline style */}
-                  <p className="body-3">{windSpeedKmh} km/h</p> {/* Display converted speed */}
+                  {/* Pass locale to utility function */}
+                  <p className="body-3">{getHours(dateTimeUnix, timezone, i18n.language)}</p>
+                   {/* Use t() for alt text */}
+                  <img src="/assets/images/weather_icons/direction.png" width="48" height="48" loading="lazy" alt={t('hourlyForecast.windAlt')}
+                    className="weather-icon" style={{ transform: `rotate(${windDirection - 180}deg)` }} />
+                   {/* Use t() with interpolation for speed and unit */}
+                  <p className="body-3">{t('hourlyForecast.windUnit', { speed: windSpeedKmh })}</p>
                 </div>
               </li>
             );

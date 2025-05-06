@@ -1,19 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { DEFAULT_LOCATION } from '../App'; // Import default location
+import { DEFAULT_LOCATION } from '../App';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
-function ErrorPage({ message = "Page not found!" }) {
-  // Construct the default location path including lat/lon
+function ErrorPage({ message }) { // message prop might come from Layout error state
+  const { t } = useTranslation(); // Use the hook
+
+  // Use the message prop if provided (e.g., API error), otherwise use the default 404 message from translation
+  const displayMessage = message || t('errorPage.pageNotFoundMessage');
+
+  // Construct the default location path
   const defaultHomePath = `#/weather?lat=${DEFAULT_LOCATION.lat}&lon=${DEFAULT_LOCATION.lon}`;
 
   return (
-    // The error-content display is handled directly by CSS based on its presence in the DOM.
-    // In React, we conditionally render this component.
-    <section className="error-content" data-error-content style={{ display: 'flex' }}> {/* Ensure it's displayed when rendered */}
-      <h2 className="heading">404</h2>
-      <p className="body-1">{message}</p> {/* Use the passed message */}
+    <section className="error-content" data-error-content style={{ display: 'flex' }}>
+      {/* Use t() for title */}
+      <h2 className="heading">{t('errorPage.title')}</h2>
+      {/* Display the message */}
+      <p className="body-1">{displayMessage}</p>
       <Link to={defaultHomePath} className="btn-primary">
-        <span className="span">Go Home</span>
+        {/* Use t() for button text */}
+        <span className="span">{t('errorPage.goHome')}</span>
       </Link>
     </section>
   );

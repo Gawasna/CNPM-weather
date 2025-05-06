@@ -20,7 +20,13 @@ export const fetchData = async function (URL) {
     const response = await fetch(`${URL}&appid=${api_key}`);
     if (!response.ok) {
         // Basic error handling for non-200 responses
-        if (response.status === 404) throw new Error('Location not found');
+        // OpenWeatherMap returns 400 for invalid city search sometimes
+        // And 404 for other resource issues
+        // Let's check status specifically
+        if (response.status === 400 || response.status === 404) {
+             const errorData = await response.json(); // Try to read error message from API
+             throw new Error(errorData.message || `Location data not found or invalid request (${response.status})`);
+        }
         if (response.status === 401) throw new Error('Invalid API key');
         throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -34,21 +40,28 @@ export const fetchData = async function (URL) {
 
 export const url = {
   currentWeather(lat, lon) {
+    // Change http:// to https://
     return `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric`
   },
   forecast(lat, lon) {
+    // Change http:// to https://
     return `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric`
   },
   airPollution(lat, lon) {
-    return `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}`
+    // Change http:// to https://
+    // Note: Some OpenWeatherMap APIs might have different protocols,
+    // but the standard ones for /data/2.5 and /geo/1.0 should support HTTPS.
+    return `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}`
   },
   reverseGeo(lat, lon) {
-    return `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=5`
+    // Change http:// to https://
+    return `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=5`
   },
   /**
    * @param {string} query Search query e.g.: "London", "New York"
    */
   geo(query) {
-    return `http://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5`
+    // Change http:// to https://
+    return `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5`
   }
 }

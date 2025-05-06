@@ -3,12 +3,11 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import ErrorPage from './components/ErrorPage';
 
-// Define the default location if geolocation is denied or fails
 const DEFAULT_LOCATION = {
-  lat: 51.5073219,
-  lon: -0.1276474, // London coordinates
-  name: 'London', // Optional: provide a default name
-  country: 'GB'   // Optional: provide a default country
+  lat: 16.068,
+  lon: 108.212, // London coordinates
+  name: 'Da Nang', // Optional: provide a default name
+  country: 'VN'   // Optional: provide a default country
 };
 export { DEFAULT_LOCATION };
 

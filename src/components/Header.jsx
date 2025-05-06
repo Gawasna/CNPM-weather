@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Ensure Link and useNavigate are imported
-import { fetchData, url } from '../utils/api'; // Import API utilities
+import { Link, useNavigate } from 'react-router-dom';
+import { fetchData, url } from '../utils/api';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 function Header({ currentLocationBtnDisabled }) {
   const [searchViewActive, setSearchViewActive] = useState(false);
@@ -8,27 +10,25 @@ function Header({ currentLocationBtnDisabled }) {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
 
-  const navigate = useNavigate(); // Although we use Link now, keep navigate for the default location fallback
+  const navigate = useNavigate();
   const searchInputRef = useRef(null);
   const searchTimeoutRef = useRef(null);
 
-  // Toggle function for the search view overlay
+  const { t } = useTranslation();
+
   const toggleSearch = () => {
     setSearchViewActive(!searchViewActive);
-    // Optional: Focus the search input when opening the view
     if (!searchViewActive) {
       setTimeout(() => {
         searchInputRef.current?.focus();
       }, 100);
     } else {
-       // Clear input and results when closing the search view
        setSearchValue('');
        setSearchResults([]);
-       setIsSearching(false); // Hide loading indicator
+       setIsSearching(false);
     }
   };
 
-  // Effect for handling search input and fetching suggestions with debounce
   useEffect(() => {
     if (!searchValue) {
       setSearchResults([]);
@@ -49,7 +49,6 @@ function Header({ currentLocationBtnDisabled }) {
       } catch (error) {
         console.error("Search API call failed:", error);
         setSearchResults([]);
-        // Optionally handle error display
       } finally {
         setIsSearching(false);
       }
@@ -63,31 +62,25 @@ function Header({ currentLocationBtnDisabled }) {
 
   }, [searchValue]);
 
-  // --- Removed the handleSearchResultClick function ---
-  // Navigation will now be handled directly by the Link component
 
   return (
     <header className="header">
       <div className="container">
-        {/* Logo linking to current location. Add click handler to close search if open. */}
         <Link to="/current-location" className="logo" onClick={() => setSearchViewActive(false)}>
-          <img src="/assets/images/logo.png" width="364" height="58" alt="logo" />
+          <img src="/assets/images/logo.png" width="364" height="58" alt={t('header.logoAlt')} />
         </Link>
 
-        {/* Search View Overlay */}
         <div className={`search-view ${searchViewActive ? 'active' : ''}`} data-search-view>
-          {/* Search Wrapper */}
           <div className={`search-wrapper ${isSearching ? 'searching' : ''}`}>
-             {/* Back button to close search view */}
-             <button className="icon-btn leading-icon has-state" aria-label="close search" onClick={toggleSearch} data-search-toggler>
-               <span className="m-icon">arrow_back</span>
+             <button className="icon-btn leading-icon has-state" aria-label={t('header.closeSearch')} onClick={toggleSearch} data-search-toggler>
+               {/* Icon text MUST be the English keyword for the font */}
+               <span className="m-icon">arrow_back</span> {/* Keep "arrow_back" */}
              </button>
-             {/* Search Input Field */}
              <input
                type="search"
                name="search"
-               placeholder="Search city..."
-               autoComplete="off"
+               placeholder={t('header.searchPlaceholder')}
+               autocomplete="off"
                className="search-field"
                data-search-field
                value={searchValue}
@@ -96,22 +89,18 @@ function Header({ currentLocationBtnDisabled }) {
              />
           </div>
 
-          {/* Search Results Area */}
           <div className={`search-result ${searchResults.length > 0 || (!isSearching && searchValue && searchResults.length === 0) ? 'active' : ''}`} data-search-result>
-             {/* List to display search suggestions */}
              <ul className="view-list" data-search-list>
-               {/* Map over searchResults array to create list items */}
                {searchResults.map((location, index) => (
                  <li key={index} className="view-item">
-                   {/* Use Link to navigate to the weather route for this location */}
-                   {/* The 'has-state' class is moved to the Link to maintain hover/focus styles */}
                    <Link
                        to={`#/weather?lat=${location.lat}&lon=${location.lon}`}
-                       className="item-link has-state" // Keep class names for styling
-                       aria-label={`${location.name} weather`}
-                       onClick={toggleSearch} // Call toggleSearch to close the view *before* navigation
+                       className="item-link has-state"
+                       aria-label={`${location.name} ${t('currentWeather.weatherLabel', { defaultValue: 'weather' })}`}
+                       onClick={toggleSearch}
                    >
-                       <span className="m-icon">location_on</span>
+                       {/* Icon text MUST be the English keyword for the font */}
+                       <span className="m-icon">location_on</span> {/* Keep "location_on" */}
                        <div>
                          <p className="item-title">{location.name}</p>
                          <p className="label-2 item-subtitle">{location.state ? `${location.state}, ` : ''}{location.country}</p>
@@ -120,22 +109,20 @@ function Header({ currentLocationBtnDisabled }) {
                  </li>
                ))}
              </ul>
-             {/* Display message if no results found after search completes */}
              {!isSearching && searchValue && searchResults.length === 0 && (
                  <div className="view-item">
-                    <p className="body-3">No results found for "{searchValue}"</p>
+                    <p className="body-3">{t('header.noResultsFound', { query: searchValue })}</p>
                  </div>
              )}
           </div>
         </div>
 
-        {/* Header Actions */}
         <div className="header-actions">
-          {/* Button to open search view */}
-          <button className="icon-btn has-state" aria-label="open search" onClick={toggleSearch} data-search-toggler>
-            <span className="m-icon icon">search</span>
+          <button className="icon-btn has-state" aria-label={t('header.openSearch')} onClick={toggleSearch} data-search-toggler>
+            {/* Icon text MUST be the English keyword for the font */}
+            <span className="m-icon icon">search</span> {/* Keep "search" */}
           </button>
-          {/* Link/Button to navigate to current location weather */}
+          <LanguageSwitcher />
           <Link
             to="/current-location"
             className={`btn-primary has-state ${currentLocationBtnDisabled ? 'disabled' : ''}`}
@@ -144,13 +131,13 @@ function Header({ currentLocationBtnDisabled }) {
                if (currentLocationBtnDisabled) {
                   e.preventDefault();
                } else {
-                  // Close search view if user clicks current location button while search is open
                   setSearchViewActive(false);
                }
             }}
           >
-            <span className="m-icon">my_location</span>
-            <span className="span">Current Location</span>
+            {/* Icon text MUST be the English keyword for the font */}
+            <span className="m-icon">my_location</span> {/* Keep "my_location" */}
+            <span className="span">{t('header.currentLocationBtn')}</span>
           </Link>
         </div>
       </div>

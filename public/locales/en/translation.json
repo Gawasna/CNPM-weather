@@ -1,0 +1,109 @@
+{
+    "appTitle": "weatherio",
+    "metaDescription": "weatherio is a weather app made by codewithsadee",
+  
+    "header": {
+      "logoAlt": "logo",
+      "searchPlaceholder": "Search city...",
+      "closeSearch": "close search",
+      "openSearch": "open search",
+      "currentLocationBtn": "Current Location",
+      "searchResultLocationOn": "location_on",
+      "noResultsFound": "No results found for \"{{query}}\""
+    },
+  
+    "currentWeather": {
+      "nowTitle": "Now",
+      "dateIconAlt": "calendar_today",
+      "locationIconAlt": "location_on",
+      "temperatureUnit": "{{temp}}°c"
+    },
+  
+    "forecast5Days": {
+      "title": "5 Days Forecast",
+      "tempUnit": "{{temp}}°"
+    },
+  
+    "highlights": {
+      "title": "Today's Highlights",
+      "airQualityIndex": {
+        "title": "Air Quality Index",
+        "iconAlt": "air",
+        "pm25": "PM₂.₅",
+        "so2": "SO₂",
+        "no2": "NO₂",
+        "o3": "O₃",
+        "level": {
+          "1": "Good",
+          "2": "Fair",
+          "3": "Moderate",
+          "4": "Poor",
+          "5": "Very Poor"
+        },
+        "message": {
+          "1": "Air quality is considered satisfactory, and air pollution poses little or no risk",
+          "2": "Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.",
+          "3": "Members of sensitive groups may experience health effects. The general public is not likely to be affected.",
+          "4": "Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects",
+          "5": "Health warnings of emergency conditions. The entire population is more likely to be affected."
+        }
+      },
+      "sunriseSunset": {
+        "title": "Sunrise & Sunset",
+        "sunriseIconAlt": "clear_day",
+        "sunsetIconAlt": "clear_night",
+        "sunriseLabel": "Sunrise",
+        "sunsetLabel": "Sunset"
+      },
+      "humidity": {
+        "title": "Humidity",
+        "iconAlt": "humidity_percentage",
+        "unit": "{{value}}%"
+      },
+      "pressure": {
+        "title": "Pressure",
+        "iconAlt": "airwave",
+        "unit": "{{value}}hPa"
+      },
+      "visibility": {
+        "title": "Visibility",
+        "iconAlt": "visibility",
+        "unit": "{{value}}km"
+      },
+      "feelsLike": {
+        "title": "Feels Like",
+        "iconAlt": "thermostat",
+        "unit": "{{value}}°c"
+      }
+    },
+  
+    "hourlyForecast": {
+      "title": "Today at",
+      "tempUnit": "{{temp}}°",
+      "windAlt": "direction",
+      "windUnit": "{{speed}} km/h"
+    },
+  
+    "footer": {
+      "copyright": "Copyright 2023 codewithsadee. All Rights Reserved.",
+      "poweredBy": "Powered By"
+    },
+  
+    "errorPage": {
+      "title": "404",
+      "message": "Page not found!",
+      "goHome": "Go Home",
+      "dataErrorMessage": "Could not load weather data. Please try again later."
+    },
+  
+    "geolocation": {
+       "permissionDeniedMessage": "Could not retrieve current location. Showing data for the default location.",
+       "fallbackMessage": "Select a location or enable geolocation."
+    },
+  
+    "weatherUtils": {
+        "weekdays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        "timePeriod": { "am": "AM", "pm": "PM"}
+    }
+  }

@@ -7,6 +7,25 @@
 
 'use strict';
 
+const getCurrentLocale = () => {
+  // i18n instance is available globally after import and init
+  // This might require a slight adjustment or passing locale from component
+  // A cleaner way is to pass the locale or use a hook if used in a component context.
+  // For pure utility, we might need to import i18n directly, but this can be tricky
+  // if the utility is imported before i18n is fully initialized.
+  // A better approach: Pass the locale string to these functions.
+  // Let's assume functions receive a 'locale' string argument now.
+  // For simple utility functions, we might stick to t() if imported,
+  // but for formatting dates/times, Intl is better.
+
+  // Let's update these functions to accept locale. The components using them
+  // will get the locale from useTranslation() and pass it.
+  // Or, alternatively, we can import the i18n instance here if absolutely needed,
+  // though passing the locale from the component is the standard React way.
+
+  // Let's adjust functions to accept locale and use Intl.
+};
+
 export const weekDayNames = [
   "Sunday",
   "Monday",
@@ -35,41 +54,40 @@ export const monthNames = [
 /**
  * @param {number} dateUnix Unix date in seconds
  * @param {number} timezone Timezone shift from UTC in seconds
- * @returns {string} Date String. formate: "Sunday 10, Jan"
+ * @param {string} locale Current locale string (e.g., 'en', 'vi')
+ * @returns {string} Date String. formate: "Sunday 10, Jan" (localized)
  */
-export const getDate = function (dateUnix, timezone) {
+export const getDate = function (dateUnix, timezone, locale) {
   const date = new Date((dateUnix + timezone) * 1000);
-  const weekDayName = weekDayNames[date.getUTCDay()];
-  const monthName = monthNames[date.getUTCMonth()];
-
-  return `${weekDayName} ${date.getUTCDate()}, ${monthName}`;
+  // Use Intl.DateTimeFormat for localization
+  const options = { weekday: 'long', day: 'numeric', month: 'short' };
+  return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
 /**
  * @param {number} timeUnix Unix date in seconds
  * @param {number} timezone Timezone shift from UTC in seconds
- * @returns {string} Time string. formate: "HH:MM AM/PM"
+ * @param {string} locale Current locale string (e.g., 'en', 'vi')
+ * @returns {string} Time string. formate: "HH:MM AM/PM" (localized)
  */
-export const getTime = function (timeUnix, timezone) {
+export const getTime = function (timeUnix, timezone, locale) {
   const date = new Date((timeUnix + timezone) * 1000);
-  const hours = date.getUTCHours();
-  const minutes = date.getUTCMinutes();
-  const period = hours >= 12 ? "PM" : "AM";
-
-  return `${hours % 12 || 12}:${minutes} ${period}`;
+   // Use Intl.DateTimeFormat for localization
+   const options = { hour: 'numeric', minute: '2-digit', hour12: true }; // Adjust hour12 based on preference or add logic
+   return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
 /**
  * @param {number} timeUnix Unix date in seconds
  * @param {number} timezone Timezone shift from UTC in seconds
- * @returns {string} Time string. formate: "HH AM/PM"
+ * @param {string} locale Current locale string (e.g., 'en', 'vi')
+ * @returns {string} Time string. formate: "HH AM/PM" (localized)
  */
-export const getHours = function (timeUnix, timezone) {
+export const getHours = function (timeUnix, timezone, locale) {
   const date = new Date((timeUnix + timezone) * 1000);
-  const hours = date.getUTCHours();
-  const period = hours >= 12 ? "PM" : "AM";
-
-  return `${hours % 12 || 12} ${period}`;
+  // Use Intl.DateTimeFormat for localization
+  const options = { hour: 'numeric', hour12: true }; // Adjust hour12 based on preference or add logic
+  return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
 /**

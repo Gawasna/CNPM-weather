@@ -31,3 +31,8 @@ dist-ssr
 .env.test.local
 .env.production.local
 .env.development
+
+#self-signed cert
+*.pem
+*.crt
+*.key

@@ -1,0 +1,109 @@
+{
+    "appTitle": "weatherio",
+    "metaDescription": "weatherio là ứng dụng thời tiết được tạo bởi codewithsadee",
+  
+    "header": {
+      "logoAlt": "biểu tượng",
+      "searchPlaceholder": "Tìm kiếm thành phố...",
+      "closeSearch": "đóng tìm kiếm",
+      "openSearch": "mở tìm kiếm",
+      "currentLocationBtn": "Vị trí hiện tại",
+      "searchResultLocationOn": "vị trí",
+      "noResultsFound": "Không tìm thấy kết quả cho \"{{query}}\""
+    },
+  
+    "currentWeather": {
+      "nowTitle": "Hiện tại",
+      "dateIconAlt": "lịch",
+      "locationIconAlt": "vị trí",
+      "temperatureUnit": "{{temp}}°c"
+    },
+  
+    "forecast5Days": {
+      "title": "Dự báo 5 ngày",
+      "tempUnit": "{{temp}}°"
+    },
+  
+    "highlights": {
+      "title": "Thông số hôm nay",
+      "airQualityIndex": {
+        "title": "Chỉ số chất lượng không khí",
+        "iconAlt": "không khí",
+        "pm25": "PM₂.₅",
+        "so2": "SO₂",
+        "no2": "NO₂",
+        "o3": "O₃",
+        "level": {
+          "1": "Tốt",
+          "2": "Khá",
+          "3": "Trung bình",
+          "4": "Kém",
+          "5": "Rất kém"
+        },
+        "message": {
+          "1": "Chất lượng không khí được coi là tốt, ít hoặc không gây rủi ro ô nhiễm không khí.",
+          "2": "Chất lượng không khí chấp nhận được; tuy nhiên, một số người nhạy cảm đặc biệt với ô nhiễm không khí có thể gặp vấn đề sức khỏe ở mức độ vừa phải.",
+          "3": "Các nhóm nhạy cảm có thể bị ảnh hưởng sức khỏe. Cộng đồng nói chung ít có khả năng bị ảnh hưởng.",
+          "4": "Mọi người có thể bắt đầu gặp vấn đề sức khỏe; các nhóm nhạy cảm có thể gặp vấn đề sức khỏe nghiêm trọng hơn.",
+          "5": "Cảnh báo sức khỏe về tình trạng khẩn cấp. Toàn bộ dân số có khả năng bị ảnh hưởng nhiều hơn."
+        }
+      },
+      "sunriseSunset": {
+        "title": "Mặt trời mọc & Lặn",
+        "sunriseIconAlt": "ngày quang đãng",
+        "sunsetIconAlt": "đêm quang đãng",
+        "sunriseLabel": "Mặt trời mọc",
+        "sunsetLabel": "Mặt trời lặn"
+      },
+      "humidity": {
+        "title": "Độ ẩm",
+        "iconAlt": "tỷ lệ độ ẩm",
+        "unit": "{{value}}%"
+      },
+      "pressure": {
+        "title": "Áp suất",
+        "iconAlt": "sóng không khí",
+        "unit": "{{value}}hPa"
+      },
+      "visibility": {
+        "title": "Tầm nhìn",
+        "iconAlt": "tầm nhìn",
+        "unit": "{{value}}km"
+      },
+      "feelsLike": {
+        "title": "Cảm giác như",
+        "iconAlt": "nhiệt kế",
+        "unit": "{{value}}°c"
+      }
+    },
+  
+    "hourlyForecast": {
+      "title": "Hôm nay lúc",
+      "tempUnit": "{{temp}}°",
+      "windAlt": "hướng gió",
+      "windUnit": "{{speed}} km/h"
+    },
+  
+    "footer": {
+      "copyright": "Bản quyền 2023 codewithsadee. Mọi quyền được bảo lưu.",
+      "poweredBy": "Cung cấp bởi"
+    },
+  
+    "errorPage": {
+      "title": "404",
+      "message": "Không tìm thấy trang!",
+      "goHome": "Về trang chủ",
+      "dataErrorMessage": "Không thể tải dữ liệu thời tiết. Vui lòng thử lại sau."
+    },
+  
+    "geolocation": {
+      "permissionDeniedMessage": "Không thể truy xuất vị trí hiện tại. Hiển thị dữ liệu cho vị trí mặc định.",
+      "fallbackMessage": "Chọn một địa điểm hoặc cho phép truy cập vị trí."
+    },
+  
+    "weatherUtils": {
+        "weekdays": ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"],
+        "months": ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"],
+        "timePeriod": { "am": "SA", "pm": "CH"}
+    }
+  }
